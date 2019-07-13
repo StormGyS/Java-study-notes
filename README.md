@@ -28,6 +28,9 @@ Own java study notes for future viewing
      {***}
      ...
      else{***}
+   (3)java中的循环语句   (i)while循环 (ii)for循环 (iii)do...while循环
+      (i)while循环   while(条件) {***} //判断条件为真,执行语句.再判断,直到条件不成立为止.  Demo0:2.还我钱!
+      
    
   
   
