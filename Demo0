@@ -1,5 +1,18 @@
+0:
 public class Hello{
        public static void main(String[] args){
        System.out.println("Hello World");
        }
+}
+
+1:
+public class TestScanner{
+       public static void main(String[] args){
+       //创建扫描器
+       Scanner sc = new Scanner(System.in);
+       //使用扫描器
+       int a=sc.nextInt();
+       int b=sc.nextInt();
+       System.out.println("请输入a和b:"+(a+b));  //+实现拼接
+       } 
 }
