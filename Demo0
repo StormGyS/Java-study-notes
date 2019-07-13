@@ -16,3 +16,14 @@ public class TestScanner{
        System.out.println("a+b="+(a+b));  //+实现拼接
        } 
 }
+
+2.
+public class TestIf{
+       public static void main(String[] args)
+       int i=1;
+       while(i<=10)
+       {
+       System.out.println("还我钱!");
+       i=i+1;
+       }
+}
