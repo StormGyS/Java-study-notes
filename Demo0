@@ -13,6 +13,6 @@ public class TestScanner{
        //使用扫描器
        int a=sc.nextInt();
        int b=sc.nextInt();
-       System.out.println("请输入a和b:"+(a+b));  //+实现拼接
+       System.out.println("a+b="+(a+b));  //+实现拼接
        } 
 }
