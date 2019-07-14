@@ -34,6 +34,8 @@ Own java study notes for future viewing
    (5)Demo0:3.应用猜数
  5.基本数据类型
    (1)整数:  int 整数 32bit 4byte -21亿~21亿之间;  byte java中最小的数据单元 8bit -128~127;  short 短整数 16bit 2byte -32768~32767;  long 长整数 64bit 8byte; eg:1300000000用int,而6000000000用long表示,报错就要在末尾加上L.
+   (2)小数:  double 64bit 8byte 双精度小数,精度高,准确性高;  float 32bit 4byte 单精度小数,同样末尾要加f,不然报错.
+   
    
    
    
