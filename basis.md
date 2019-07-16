@@ -10,3 +10,5 @@
    cd/:返回到根目录
    del:删除文件
    exit:退出Dos窗口
+二:java语言概述
+1.java语言的特点:跨平台性(java程序可在不同的操作系统下运行,即可移植性好.得益于有Windows的jvm和Linux的jvm)
