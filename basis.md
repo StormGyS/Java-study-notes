@@ -10,5 +10,11 @@
    cd/:返回到根目录
    del:删除文件
    exit:退出Dos窗口
+   切换盘符直接就是D:即可.
 二:java语言概述
 1.java语言的特点:跨平台性(java程序可在不同的操作系统下运行,即可移植性好.得益于有Windows的jvm和Linux的jvm)
+2.jre:java运行环境 =jvm+核心类库等
+3.jdk:java开发工具包 =java的一些开发工具+jre; 常见的开发工具有编译工具(javac.exe)和打包工具(jar.exe)等.
+       总之就是用jdk开发java程序,交给jre运行.
+4.配置环境变量就是让开发工具在任一目录下运行,也可以连带bin文件夹一起复制放到Path变量里,放在最前面用;隔开即可.
+5.不用public那么文件名.java就不用与类名一致.
