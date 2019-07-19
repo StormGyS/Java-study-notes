@@ -85,6 +85,10 @@ public class PanDuanJiJie
               }
               else if(i>=6 && i<=8)
               {
+              System.out.println("夏季");
+              }
+              else if(i>=9 && i<=11)
+              {
               System.out.println("秋季");
               }
               else
