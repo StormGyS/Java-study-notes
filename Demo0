@@ -65,3 +65,36 @@ public class TestCaiShuo{
        }
        }
 }
+4.定义一个月份,判断他是哪个季节.3~5春季,6~8夏季,9~11秋季,12-1-2为冬季.
+public class PanDuanJiJie
+{ 
+       public static void main(String[] args)
+       {
+              int i=7;
+              /*
+              为什么判断除1和12之外的数,好处是1.告诉用户要输入正确的数据,要对输入的数据进行判断;2.如果不排除1~12之外的数,那么12,1,2
+              不能用&&连接,当然也可以再用else if(i==12 || i==1 || i==2),建议先进行数据判断.       
+              */
+              if(i<1 || i>12)
+              {
+              System.out.println("月份不对!");
+              }
+              else if(i>=3 && i<=5)
+              {
+              System.out.println("春季");
+              }
+              else if(i>=6 && i<=8)
+              {
+              System.out.println("秋季");
+              }
+              else
+              {
+              System.out.println("冬季");
+              }       
+       }
+}
+
+
+
+
+
