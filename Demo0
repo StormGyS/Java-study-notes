@@ -97,6 +97,38 @@ public class PanDuanJiJie
               }       
        }
 }
+5.求1加到10的和.
+(i)public class TestSum
+{
+       public static void main(String[] args)
+       {
+              //定义一个变量sum,用来存储和输出和,初始化为0.
+              int sum=0;
+              //定义一个变量i用来记录不断循环改变的数1~10.
+              int i=1;
+              while(i<=10)
+              {
+              sum=sum+i;
+              i++;
+              }
+              System.out.println("sum="+sum);     
+       }
+}
+(ii)public class TestSum
+{
+       public static void main(String[] args)
+       {
+              //定义一个变量sum,用来存储和输出和,初始化为0.
+              int sum=0;
+              //定义一个变量i用来记录不断循环改变的数1~10.
+              for(int i=1;i<=10;i++)
+              {
+              sum=sum+i;
+              }
+              System.out.println("sum="+sum);     
+       }
+}
+
 
 
 
