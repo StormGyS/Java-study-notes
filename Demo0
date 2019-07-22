@@ -128,6 +128,34 @@ public class PanDuanJiJie
               System.out.println("sum="+sum);     
        }
 }
+6.求1~100之间7的倍数的数的个数,并打印.
+/*
+1.需求:1~100之间7的倍数的数的个数,并打印.
+2.思路:
+(1)求1~100之间的数,不可能都定义出来,利用for循环实现1~100;
+(2)求7的倍数,是不是就是被7整除,余数为0;
+(3)记录倍数的个数,即定义一个变量,当该数能被7整除,变量自增.
+3.步骤:
+(1)定义变量i,i用for语句实现1~100;
+(2)i%7==0;
+(3)定义count变量,使其自增来计数.
+*/
+public class TestCount
+{
+       public static void main(String[] args)
+       {
+              int count=0;
+              for(int i=1;i<=100;i++)
+              {
+                     if(i%7==0)
+                     {
+                            count++;
+                     }
+              }
+              System.out.println("count="+count);
+       }
+}
+
 
 
 
