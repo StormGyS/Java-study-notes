@@ -174,6 +174,36 @@
         1*2=2 2*2=4
         1*3=3 2*3=6 3*3=9
         ...
+(4)其他控制流程语句
+   break(跳出):应用在switch和loop语句中;
+   continue(继续):应用在loop语句中.
+   注:(i)这两个语句离开应用范围,存在没有意义;
+      (ii)这两个语句单独存在是,下面不能有语句,因为执行不到.
+      eg1:单独存在
+           ...
+           break/continue;  //不能输出打印
+           System.out.println("hello");
+      eg2:/*
+          用continue控制循环,打印1到10的偶数
+          部分代码如下
+          */
+          if(i%2==1)
+             continue;
+          System.out.println("i="+i);
+       (iii)break跳出循环,即结束循环了;continue结束本次循环,继续下一次循环;
+       (iv)标号的出现,可以让这两个语句指定作用范围
+       eg:
+          ...
+          q: for(;;)  //给外循环起名叫q
+             {
+               w: for(;;)  //给内循环起名叫w
+               {
+               ...
+               break q/w;(continue q/w;)  //指定跳出或者继续外(内)循环
+               }
+             }
+         
+                      
         
         
          
