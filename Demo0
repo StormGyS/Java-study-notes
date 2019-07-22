@@ -155,7 +155,51 @@ public class TestCount
               System.out.println("count="+count);
        }
 }
-
+7.打印下面图案
+(1)****
+   ****
+   ****
+class Test1
+{
+       public static void main(String[] args)
+       {
+              for(int x=0;x<3;x++)
+              {
+                     for(y=0;y<=4;y++)
+                     {
+                            System.out.print("*");
+                     }
+                     System.out.println();
+              }
+       }
+}
+(2)*****
+   ****
+   ***
+   **
+   *
+class Test2
+{
+       public static void main(String[] args)
+       {
+              int z=5;                       //注释掉
+              for(int x=0;x<5;x++)
+              {
+                     /*
+                     此时打印5行5列图案;
+                     注意到每行的元素都比前一行少一个,我们可以改变内循环的循环条件表达式,即x=0,y区间为0~5;x=1,y区间为0~4;...,即可以把y<5,把5
+                     设置为一个变量,每次内循环结束都自减即(0~z);同理也可以每次改变初始化表达式,即把y=0设置为一个变量,注意到每次外循环x的值与内循环y=0
+                     的值变化一致,即可以把y=0中的0设置为x,及每次区间左边自增,右边不变,即(x~5).
+                     */
+                     for(y=0;y<z;y++)        //y=x;y<5
+                     {
+                            System.out.print("*");
+                     }
+                     System.out.println();
+                     z--;                    //注释掉
+              }
+       }
+}
 
 
 
