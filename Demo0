@@ -299,6 +299,45 @@ class Test2
               return x*3+5; //执行语句与return合并
        }
    }
+   9.对数组[5,1,6,4,2,8,9]进行排序.
+   public class SelectSort
+   {
+       //对数组进行从小到大排序
+       public static void sortArray(int[] arr) //此处返回值类型定义为void,因为排序之后元素还存在原数组中
+       {
+              for(int x=0;x<arr.length-1;x++) //外循环控制每次要比较的元素arr[x],x为0~arr.length-2.
+              {
+                     for(int y=x+1;y<arr.length;y++) //内循环控制分别要比较的数arr[x+1],x为1~arr.length-1.
+                     {
+                            if(arr[x]>arr[y])
+                            {
+                                   int temp=arr[x];
+                                   arr[x]=arr[y];
+                                   arr[y]=temp;
+                            }
+                     }
+              }
+       }   
+       public static void main(String[] args)
+       {
+       int[] arr=new int[]{5,1,6,4,2,8,9};
+       //打印排序前的数组
+       printArray(arr);
+       //排序
+       sortArray(arr);
+       //打印排序后的数组
+       printArray(arr);       
+       }
+       //对数组进行打印
+       public static void printArray(int[] arr)
+       {
+              for(int i=0;i<arr.length;i++) //用for循环依次打印数组元素
+              {
+                     System.out.print(arr[i]+" ");
+              }
+              System.out.println();
+       }
+   }
 
 
 
