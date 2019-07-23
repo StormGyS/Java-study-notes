@@ -45,6 +45,7 @@
      当然别人写 int arr[]=new int[2]; //也可以
      注意: arr=null; //该数组没有任何地址指向了,,不在指向堆内存首地址了,后续无法操作数组元素了.
            System.out.println("arr["+0+"]="+arr[0]); //打印数组第一个元素,不能写成"arr[0]="+arr[0],要注意一下.
+           System.out.println(arr);//打印输出数组的首地址.
       /*
       数组的操作:
       1.获取数组中的元素,通常采用遍历,即一个for循环 eg:for(int i=0;i<5;i++),打印arr[i]; //i为数组下标
@@ -55,7 +56,7 @@
       */
       应用:获取一个数组的最大值和最小值?
       第一种方法:直接定义一个max(min),初始化为数组的第一个元素,再分别比较;  max<arr[i],max=arr[i],return max;
-      第二种方法:定义max(min)=0;再利用下标比较  arr[max]<arr[i],max=i,return arr[max]
+      第二种方法:定义max(min)=0;再利用下标比较  arr[max]<arr[i],max=i,return arr[max].
       
      
      
