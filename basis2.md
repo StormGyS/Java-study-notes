@@ -77,6 +77,14 @@
       (i从0开始,少取几个数,就能得出arr.length-i-1这个式子)
       */
       排序方式最快的是希尔排序.
+      选择与冒泡排序的基本格式:
+      for(int x=0;x<arr.length;x++)
+      {
+         for(int y=0;y<arr.length;y++)
+         {
+         }
+      }
+      
       
       
       
