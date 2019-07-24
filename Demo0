@@ -300,10 +300,10 @@ class Test2
        }
    }
    9.对数组[5,1,6,4,2,8,9]进行排序.
-   public class SelectSort
+   public class ArraySort
    {
-       //对数组进行从小到大排序
-       public static void sortArray(int[] arr) //此处返回值类型定义为void,因为排序之后元素还存在原数组中
+       //选择排序对数组进行从小到大排序
+       public static void selectSort(int[] arr) //此处返回值类型定义为void,因为排序之后元素还存在原数组中
        {
               for(int x=0;x<arr.length-1;x++) //外循环控制每次要比较的元素arr[x],x为0~arr.length-2.
               {
@@ -317,14 +317,32 @@ class Test2
                             }
                      }
               }
-       }   
+       }
+       //冒泡排序对数组进行从小到大排序
+       public static void bubbleSort(int[] arr)
+       {
+              for(int x=0;x<arr.length-1;x++) //外循环控制趟数,取少点数,可得出总趟数为arr.length-1
+              {
+                     for(int y=0;y<arr.length-x-1;y++) //内循环控制两个相邻元素的比较,-x:使每趟比较的数减少,-1:防止下标越界.(取少点数即得出)
+                     {
+                            if(arr[y]>arr[y+1])
+                            {
+                                   int temp=arr[y];
+                                   arr[y]=arr[y+1];
+                                   arr[y+1]=temp;
+                            }
+                     }
+              }
+       }
        public static void main(String[] args)
        {
        int[] arr=new int[]{5,1,6,4,2,8,9};
        //打印排序前的数组
        printArray(arr);
-       //排序
-       sortArray(arr);
+       //选择排序
+       selectSort(arr);
+       //冒泡排序
+       bubbleSort(arr);
        //打印排序后的数组
        printArray(arr);       
        }
