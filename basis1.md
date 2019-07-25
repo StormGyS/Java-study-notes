@@ -1,4 +1,5 @@
-一:人机交互
+零:人机交互
+
 1.图形化界面
 2.命令行方式
 (1)Dos命令 
@@ -11,7 +12,9 @@
    del:删除文件
    exit:退出Dos窗口
    切换盘符直接就是D:即可.
-二:java语言概述
+   
+一:java语言概述
+
   1.java语言的特点:跨平台性(java程序可在不同的操作系统下运行,即可移植性好.得益于有Windows的jvm和Linux的jvm)
   2.jre:java运行环境 =jvm+核心类库等
   3.jdk:java开发工具包 =java的一些开发工具+jre; 常见的开发工具有编译工具(javac.exe)和打包工具(jar.exe)等.
@@ -21,7 +24,9 @@
   6.空格按多了是不是就废了,按Tab键(制表符).
   7.在一个java文件中,写两个不同的class,用javac编译后会生成两个.class字节码文件,用java分别运行这两个字节码文件.
   8.写类之前先写一个多行注释,有需求:  思路:1. 2.  步骤:1. 2. ...,再写类,关键代码要加注释(一是解释说明,二是调试用的).
-三:java语言基础组成
+  
+二:java语言基础组成
+
   1.关键字:被java语言赋予了特殊含义的单词,都小写.
   (1)用来定义数据类型:class,interface,byte,short,int,long,float,double,char,boolean,void.
   (2)用来定义数据类型的值:true,false,null.
