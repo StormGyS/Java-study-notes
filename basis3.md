@@ -192,8 +192,10 @@
   
   定义了类,只有在main函数中,new一个对象,类中的内容才有可能被执行(属性肯定被建立在堆内存中,且有初始化值;方法要被调用[构造除外]才执行),要注意执行顺序.
   
-  /*
-  this关键字,用法一就是区分同名变量,代表本类中的对象,具体就代表本函数所属对象的引用
+ 3.5 this关键字
+ 
+  this关键字:
+  用法一就是区分同名变量,代表本类中的对象,具体就代表本函数所属对象的引用
   上面的构造函数Person(String n){name=n;}是不是发现n是字符串,但是他到底代表什么,不知道,阅读性阅读性阅读性极差,如果将n改为name就一目了然了,但是有问   题了,我们知道构造函数Person中的String name是局部变量,而name=name;语句中的左端name是对象中的name(注意这里左端的name不是图纸成员变量privata
    String name;里的name,左端的name是存在于堆内存新建对象里的name,要区别),左右都是name,不作任何处理,新建p1对象时,不能实现赋值,即name为null,为了解   决这个问题,为了以示区分成员变量和局部变量,加上this.关键字,即this.name=name;就可实现赋值了.此处this就是p1.说白了用this就是为了区分同名情况.
    
@@ -222,7 +224,6 @@
    即将语句(m)改为this(name);即可.注意this语句必须必须必须要写在第一行.
    
    注意:记住一般函数不能直接调用构造函数,因为this语句不能用于一般函数中,只能用于构造函数之间.但是this关键字能用于一般函数中,即应用.
-  */
   
  3.6 static(静态)关键字
   
@@ -279,7 +280,29 @@
   拓展:想要往主函数里传值 在运行字节码文件时,加入即可 eg:java MainTest hehe haha  打印args[0] args.length 输出hehe 2.
   不想在Dos窗口里输入hehe haha,可以定义两个类,分别有一个主函数,类1中定义字符串数组,类2中打印,类1中来个 类2.main(arr);//main是被static定义的
   //当然能用类名调用,即可以学习使用static,又可以往main函数中传值(String类型).
+  
+  //调用主函数
+  public class MainTest
+  {
+      public static void main(String[] args)
+      {
+          String[] arr={"haha","hehe","heihei"};
+          MainDemo.main(arr); //调用类MainDemo中的主函数main,实现打印数组arr.
+      }
+  }
+  class MainDemo
+  {
+      public static void main(String[] args)
+      {
+          for(int i=0;i<args.length;i++)
+          {
+              System.out.println(args[i]);
+          }
+      }
+  } 
   */
+  
+  
   
   
   
