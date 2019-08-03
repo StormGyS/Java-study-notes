@@ -302,12 +302,139 @@
   } 
   */
   
-  
-  
-  
-  
-  
-  
-  
+ (6)什么时候使用static?
+    定义静态变量:当对象中出现共享数据时,该数据被静态所修饰;对象中的特有数据要定义为非静态存在于堆内存中.
+    定义静态函数:当功能内部没有访问到非静态数据时,就可以定义为静态的.(因为静态会被存于方法区中,优先于对象,所以静态函数内部不能有特有数据[eg:不能访问
+    对象的name数据]
     
-   
+ (7)先讲一个小插曲:在同一个java文件中,写ArrayTool类(用于产生对象)和ArrayToolDemo类(写主函数的类),编译ArrayTool文件,就产生ArrayToolDemo和
+    ArrayTool字节码文件,运行ArrayToolDemo即可.由于每一个应用程序(eg:ArrayToolDemo1和ArrayToolDemo2)中都有共性的功能(eg:都要求最值和排序)
+    可以将这些功能进行抽取,独立封装,以便复用(eg:就是将求最值和排序放在ArrayTool类中,再作为一个独立的java程序,而ArrayToolDemo类又作为一个java
+    程序;不管是用javac先编译ArrayTool再编译ArrayToolDemo;还是直接编译ArrayToolDemo.java文件,都可产生ArrayTool和ArrayToolDemo字节码文件
+    最后java ArrayToolDemo即可.)
+    static的应用:虽然可以通过建立ArrayTool的对象使用这些工具方法,对数组进行操作(求最值和排序),发现了问题:
+    (i)对象是用于封装数据的,可是ArrayTool对象并未封装特有数据.
+    (ii)操作数组的每一个方法都没有用到ArrayTool对象中的特有数据.
+    这时考虑,为了让程序更严谨,是不需要对象的,可以将ArrayTool中的方法定义为static,方便使用,直接通过类名调用即可.
+    但是该类还是可以被其他程序建立对象的,为了更严谨,强制让该类不能建立对象,可以在(eg:ArrayTool类)中将构造函数私有化.
+    当然,选择和冒泡排序都要swap()函数,我就可以将其private,不需要暴露给外界,把他藏起来(即private static void swap()),只需要提供要使用的函数.
+    习题:求数组[3,2,87,43,1,68]的最值和排序?
+    情景:我写好ArrayToolDemo.java文件和ArrayTool.java文件;现在另一个人只写好了ArrayToolDemo.java文件,要我的ArrayTool字节码文件直接去使用,
+         他直接将类文件ArrayTool存于c:\myclass目录下,如果直接编译他写的ArrayToolDemo.java文件,会报错,因为他的目录下没有ArrayTool类文件,
+         要告诉jvm去找,即set classpath=c:\myclass,再编译,通过后,运行ArrayToolDemo类文件,又报错,因为jvm去找设置路径下的ArrayToolDemo类文件去执行
+         但是设置路径下没有ArrayToolDemo类文件,所以设置路径正确的应为现在当前路径下找,没有再去设置的下去找 set classpath=.;c:\myclass 回车,直接运行
+         即可(无需编译了,因为都有了两个字节码文件了).
+    上面情境中,你会用(ArrayTool)类文件了吗?不,你不会,因为你根本不知道里面写的是啥?于是就有了下面:
+    程序的说明(帮助)文档,可以给上面的ArrayTool.java文件搞一个说明文档,即使用文档注释和工具javadoc提取文档注释生成网页.但是必须要被public或protected
+    修饰.
+    eg:给类说明
+    /**
+    这是一个可以提供求最值和排序的工具类
+    @author 张三
+    @version v1.1
+    */
+    public class ArrayTool
+    {
+    /**
+    该功能可以对数组求最大值
+    @param arr 接收一个int类型的数组
+    @return    返回该数组的最大值
+    */
+    public static int getMax(int[] arr)
+    {}
+    ......
+    /**
+    写了也不被提取,因为是private,交换不需要暴露,故隐藏起来就行.
+    对数组元素位置进行置换
+    @param arr 接收一个int类型数组
+    @param a   对元素位置进行置换
+    @param b  对元素位置进行置换   
+    */
+    private static void swap(int[] arr,int a,int b)
+    {}
+    }
+  注:此类会被系统默认生成一个构造函数,而默认的构造函数的权限(public或private)与所属类一致.
+  上面写完文档注释后,在Dos窗口下 javadoc -d 指定文档注释所生成的网页文件的存放目录 -author -version xxx.java
+  eg:javadoc -d myhelp -author -version ArrayTool.java 回车即可.
+  注:-d:指目录   -author -version可以不写   然后在所指定的目录下查看双击 index.html 即可
+     形成的说明文档就是程序的API(应用程序接口)说明帮助文档,当然所使用的jdk也提供了API,里面有很多工具可以直接使用,里面有很多的类,类又存放在不同的包中,
+     常见的lang包中就有经常使用的输出打印类System,天天写的System.out.println(),而且里面类中的方法全是静态的,不用创建对象就可以使用,非常方便,之前学的排      序,查找方法里面都有,直接拿来用就行,所以说你不懂算法可以,你会看API,使用API里的工具就o了.
+  
+  /*
+  静态代码块
+  格式:
+  static
+  {
+      静态代码块中的执行语句;
+  }
+  特点:随着类的加载而执行,只执行一次,并优先于主函数运行.
+      使用于不需要创建对象时,给类进行初始化.
+  class StaticCode
+  {
+      static
+      {
+          System.out.println("a");
+      }
+  }
+  class StaticCodeDemo          //运行(java)该类时,该类被加载进内存,所以会打印 b c a over,为什么不是打印bcaaover,创建多个对象也不行,
+  {                             //因为静态代码块只执行一次.
+       static
+      {
+          System.out.println("b");
+      }
+      public static void main(String[] args)
+      {
+          new StaticCode();
+          new StaticCode();
+          System.out.println("over");       
+      }
+       static
+      {
+          System.out.println("c");
+      }
+  }
+  打印b c a over
+  
+  class StaticCode
+  {
+      int num=9;
+      StaticCode()  //构造函数
+      {
+          System.out.println("a"); 
+      }
+      static     //静态代码块
+      {
+          System.out.println("b");
+      }
+      {     //构造代码块
+          System.out.println("c"+this.num);
+      }
+       StaticCode(int x) //构造函数重载
+      {
+          System.out.println("d"); 
+      }   
+  }
+  class StaticCodeDemo  
+  {
+       public static void main(String[] args)
+      {
+            new StaticCode(4);   
+      }
+  }
+  打印b c d
+  拓展:在静态代码块中加上this.num不可以,那么在构造代码块中加this.num可以吗?可以,打印b c9 d
+  */
+  
+  /*
+  对象的初始化过程: Person p =new Person("zhangsan",20);//执行该语句会做下面的步骤
+  (i)因为new用到了Person.class,所以会先找到Person.class文件并加载到内存中;
+  (ii)执行该类中的static代码块,如果有的话,给Person类进行初始化;
+  (iii)在堆内存中开辟空间,分配内存地址;
+  (iv)在堆内存中建立对象的特有属性,并进行默认初始化;
+  (v)对对象进行显示初始化;
+  (vi)对对象进行构造代码块初始化;
+  (vii)对对象进行对应的构造函数初始化;
+  (viii)将内存地址赋给栈内存中的p变量.
+  */
+  
+  
