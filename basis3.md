@@ -465,6 +465,22 @@
      Single s2=Single.getInstance();//s2也指向同一个对象,即值为0x0045.
  }
  注:根据实际情况,类名Single可换为xxx.
+ 上面的代码提现是一开始就建立对象,对对象进行初始化,很饥渴,一开始就要有对象,称为--->饿汉式.
+ 还有一种体现,就是我很懒,等我有需要的时候(啥是需要时候,就是在其他程序用类名调用方法获得本类对象时),才想要建立对象,称为--->懒汉式.
+ class Single
+ {
+     private static Single s=null;  //很懒,现在不想要对象,s不指向对象new Single().
+     private Single(){}
+     public static Single getInstance()
+     {
+         if(s==null)
+             s=new Single;
+         return s;
+     }
+ }
+ Single s1=Single.getInstance(); //当执行到Single类时,调用方法,此时s不指向对象,地址为空,如果为空,建立new Single()对象,s指向他,再返回s所存对象地址
+                                 //给s1,s1指向new Single()对象.
+                                 
  
      
  
