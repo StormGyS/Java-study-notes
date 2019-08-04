@@ -480,9 +480,5 @@
  }
  Single s1=Single.getInstance(); //当执行到Single类时,调用方法,此时s不指向对象,地址为空,如果为空,建立new Single()对象,s指向他,再返回s所存对象地址
                                  //给s1,s1指向new Single()对象.
-                                 
- 
-     
- 
-  
-  
+ 开发中玩单例一般使用饿汉式.
+                       
