@@ -50,11 +50,105 @@
  4.3 super关键字
   this与super(超)要联系起来,this最常用的就是区分局部变量与新建对象中的属性同名情况.而super也大致相同.
   使用了extends出现了子父类之后,类中的成员有什么特点?
-  类中成员:(i)变量 (ii)函数 (3)构造函数
+  类中成员:(i)变量 (ii)函数 (iii)构造函数
   (i)变量
    如果子父类中出现非私有的同名成员变量时,子类方法想要访问本类中的变量,用this.变量名;子类方法想要访问父类中的同名变量,用super.变量名;
    super与this使用几乎一致,this代表本类对象的引用,super代表父类对象的引用.
    注:一般情况下父类有了该变量,子类不会再定义同名变量了.
+ 
+  4.4 函数覆盖
+   (ii)函数
+    当子类出现和父类一模一样(包括返回值类型和参数)时,子类创建对象调用该函数时,只会运行子类函数的内容,这种情况是函数的另一个特性:重写(覆盖).
+    利用重写特性可以对子类函数进行功能扩展,完善子类功能的特有功能内容.
+    class Tel  //第一代电话
+    {
+        void show() //方法1
+        {
+            System .out.println("number"); //打印号码
+        }
+    }
+     class NewTel extends Tel  //第二代电话
+    {
+        void show() //方法2
+        {
+            System .out.println("number"); //打印号码
+            System .out.println("name"); //打印姓名
+            System .out.println("picture"); //打印头像      
+        }
+    }
+    /*
+    分析:(a)当子类建立对象调用show方法,执行方法2,叫做覆盖;二代手机进行重写,拓展了函数内容.
+        (b)子父类都出现了打印number,应该对其进行优化,父类show方法有了功能内容,直接调用即可.
+           super.show(); //super是父类引用,如果写成show()或者是this.show(),会死循环,要注意.
+        (c)覆盖: 子类覆盖父类,必须保证子类权限大于等于父类权限,才可以覆盖,否则编译失败.
+                 静态只能覆盖静态.
+        (d)权限:public private 不加这两个关键字,是默认权限,介于两者之间.
+        (e)注意:父类搞一个函数show,将其private,子类也搞个一模一样的函数show,将其public或者默认权限,这叫覆盖吗?不,这不是覆盖,因为父类私有化了,
+               子类都不知道有其成员(变量和函数)了,无法覆盖.
+    */
+    
+   4.5 子类的实例化过程
+    (iii)构造函数
+     首先肯定不存在覆盖了,因为子父类的构造函数名就不一样了.
+     当子类继承父类时,在对子类对象初始化时,父类的构造函数也会运行.因为子类的构造函数默认第一行有一条隐式的语句 super(); //会运行父类中空参数的构造函数
+     //对子类对象做初始化,即先父初始化再子初始化,而且子类中所有的构造函数(空参和有参)默认第一行都是super();
+     区分 super. 与 super() 
+     为什么子类一定要访问父类中的构造函数?
+     因为父类中的数据子类可以直接获取,所以子类对象在建立并初始化时,需要先查看父类是如何对这些数据进行初始化的.
+     如果要访问父类中指定(带参)的构造函数,可以通过手动定义super语句的方式来指定.
+     注意:super语句手动定义时,一定要在子类构造函数内的第一行.且子类的某一个构造函数不能同时出现this();和super();因为都要在第一行.
+     class Person
+     {
+         String name;
+         Person()
+         {
+             System.out.println("person");
+         }
+         Person(String name)
+         {
+             this.name=name;
+         }   
+     }
+     class Student extends Person
+     {
+         Student()
+         {
+             //默认Person()
+             System.out.println("student");
+         }
+         Student(int x)
+         {
+             System.out.println(x); //运行到这会打印person 4(假设传的是4),因为这句话前默认super();
+         }
+         Student(String name)
+         {
+             //因为父类的带参构造函数已经实现建立对象进行赋值了,所以直接调用即可
+             super(name); //运行这句话,会调用父类Person(String name),对name赋值
+         }
+     }
+     class ZiLeiInstance
+     {
+         public static void main(String[] args)
+         {
+             Student s1=new Student();  
+             Student s2=new Student("zhangsan");  
+             System.out.println("name="+s2.name);
+         }
+     }
+     //打印person 
+           student
+     //打印name=zhangsan
+     结论:
+     子类中的所有构造函数,默认都会访问父类中空参数的构造函数,除了指定super语句.
+     (b)因为子类每一个构造函数内的第一行都有一句隐式super();当父类中没有空参数的构造函数时,子类必须手动通过super语句形式来指定
+        要访问父类的构造函数.
+     (c)当然,子类的构造函数第一行也可以手动指定this语句来访问本类中的构造函数,不用担心该构造函数访问不到父类的构造函数,因为子类
+        中至少会有一个构造函数会访问到父类中的构造函数,即间接访问.
+        
+        
+     
+    
+    
     
   
     
