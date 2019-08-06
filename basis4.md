@@ -6,6 +6,7 @@
  4.4 函数覆盖
  4.5 子类的实例化过程
  4.6 final关键字
+ 4.7 抽象类
  
   4.1 继承的概述
   
@@ -145,21 +146,128 @@
      (c)当然,子类的构造函数第一行也可以手动指定this语句来访问本类中的构造函数,不用担心该构造函数访问不到父类的构造函数,因为子类
         中至少会有一个构造函数会访问到父类中的构造函数,即间接访问.
      (d)子类一实例化就会走父类.
-        
-        
      
-    
-    
-    
-  
-    
-    
-    
-    
-    
+  4.6 final关键字
+   final:最终
+   (1)final可以修饰类,方法和变量;
+   (2)final修饰的类不可以被继承;
+   (3)final修饰的方法不可以被覆盖(复写);
+   (4)final修饰的变量(包括成员变量和局部变量)是一个常量,只能被赋值一次,且变量名要取得有意义,便于阅读,且所有字母大写,如果由多单词组成,每个单词
+   字母都大写,并用下划线连接.
+   (5)内部类只能访问被final修饰的局部变量;
+   注:现在可以修饰类的关键字学了public和final.
    
+  4.7 抽象类
+   先看一个例子,有基础班学生类和高级班学生类,他们都可以学习,但是学习的内容不同,即
+   class BaseStudent extends Student  //向上抽取相同功能,不抽取内容后再继承父类
+   {
+       void study()
+       {
+           System.out.println("study base");
+       }
+   }
+   class AdvancedStudent extends Student
+   {
+       void study()
+       {
+           System.out.println("study advanced");
+       }
+   }
+   /*
+   分析上面两个类,是不是都有相同的功能,但是功能主体不同;当然也可以用子类继承父类,在父类中定义,子类实现复写;但是比较麻烦,要定义父类的功能和功能主体;
+   于是,有了抽象类;任然可以向上提取,但是但是但是,只提取功能定义,而不提取功能主体;抽象:看不懂.用abstract(抽象)来修饰.即
+   abstract class Student
+   {
+       abstract void study(); //没有大括号,即没有功能主体,就用;表示结束.
+   } 
+   总结:抽象类的特点
+   (i)抽象方法一定在抽象类中;
+   (ii)抽象方法和抽象类必须被abstr修饰;
+   (iii)抽象类不可以用new创建对象,因为对象调用抽象方法无意义;
+   (iv)抽象类中的抽象方法要被使用,必须由子类复写所有抽象方法后,建立子类对象调用;
+       如果子类只复写了部分抽象方法,那么该子类还是一个抽象类.eg:现在父类里还有一个study1();子类继承了父类,相当于子类也有一个抽象方法study1();
+       这时子类要加上abstract修饰.当然在子类中复写如 void study1(){} //即有函数主体了,但主体里啥也没有,这也是复写.
+   (v)抽象类中也可以没有抽象方法(此时就是为了不让你建立对象,即实例化使用),当然一般方法就正常提取(既有函数,又有函数体)也可以在抽象类中存在(不加abstract).
+   */
    
-   
-   
+   练习1.某一个公司,有员工和经理,他们都有姓名,工号和工资,但是经理有奖金;他们都要工作;要求用继承去实现他们.
+    abstract class Staff
+    { 
+        //共有属性设计
+        private String name;
+        private String id;
+        private int pay;
+        //构造函数很重要,提供了对象在初始化时的属性.要学会设计一个好的好的好的构造函数,学习下面方式
+        Staff(String name,String id,int pay) //设计带参构造函数
+        {
+            this.name=name;
+            this.id=id;
+            this.pay=pay;
+        }
+        //都要工作?是不是工作内容都不同应该这样设计
+        public abstract void work();
+    }
+    class CommonStaff extends Staff
+    {
+        CommonStaff(String name,String id,int pay)
+        {
+            super(name,id,pay);
+        }
+        void work(){}
+    }
+    class Manager extends Staff
+    {
+        private int bonus;
+        Manager(String name,String id,int pay,int bonus)
+        {
+            super(name,id,pay);
+            this.bonus=bonus;
+        }
+        void work(){}
+    }
+    ...
+    
+   练习2.获取一段程序的运行时间.
+   没分析前,先来介绍一下啥是模板方法设计模式?
+   模板方法:在类中设计功能时,一部分是确定的,另一部分是不确定的,当确定的部分使用到了不确定的部分时,这时就将不确定的部分暴露出去,由该类的子类去完成.
+   注:不确定的部分是否就一定是抽象的,不需要,也可以父类中有完整的函数,子类覆盖也行;定义父类不确定的为抽象,那就在子类复写.
+   思路:先获取程序未运行时的时间,程序执行完了,再获取执行后的时间,打印两者的差即可.
+       如何获取:jdk提供了类库中有方法currentTimeMillis().
+   abstract class GetTime
+   {
+       public final void getTime()
+       {
+       //获取未运行时间
+       long start=System.currentTimeMillis();
+       //要执行的程序,注意这里是不是不知道运行哪段代码,根据 模板方法设计模式 思想,先暴露出去,由子类完成,再调用即可
+       code();
+       long end=System.currentTimeMillis();
+       System.out.println("time="+(end-start));
+       }
+       public abstract void code(); //暴露出去    
+   }
+   class Code extends GetTime
+   {
+       public void code()  //求循环打印i的运行时间
+       {
+           for(int i=1;i<100;i++)
+           {
+               System.out.print(i);
+           }
+       }    
+   }
+   class Time
+   {
+       public static void main(String[] args)
+       {
+           Code c=new Code();
+           c.getTime();
+       }
+   }
+   /*
+   分析:我们称类GetTime中的getTime方法就是模板方法,他可以解决求某段程序的运行时间.可以解决某一类问题.
+   而code()方法就是不确定的部分,这里不确定的就是求哪段程序运行时间,暴露出去,由子类完成.
+   */
  
-  
+   
+      
