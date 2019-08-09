@@ -8,6 +8,7 @@
  4.6 final关键字
  4.7 抽象类
  4.8 接口
+ 4.9 多态
  
   4.1 继承的概述
   
@@ -312,6 +313,95 @@
  来定义?不是,只要记住这句话 基本功能定义在类中,拓展功能定义在接口中. eg:现在有一个学生类,他的基本功能有study();和sleep();,现在要增加
  smoke();而smoke();就属于拓展功能了,要定义在接口中,因为有的学生不吸烟,如果把smoke();定义在类中,其子类就会强制都吸烟了,这就不合适了.
  */
+ 
+4.9 多态
+ 定义:某一类事物的多种存在形态.
+ 例子:动物中猫,狗.
+  猫这个对象对应的类型是猫类型;
+   猫 x=new 猫();
+  同时猫也是动物中的一种,也可以把猫称为动物;
+   动物 y=new 猫(); //在动物类中,建立猫类型的对象,起名叫y.
+  动物是猫和狗具体事物中抽象出来的父类型;
+  父类型引用指向了子类对象.
+ 
+ /*
+ 需求:动物中有猫和狗
+ abstract class Animal
+ {
+     abstract void eat();
+ }
+ class Cat extends Animal
+ {
+     public void eat()
+     {
+         System.out.println("吃鱼");
+     }
+     public void Catch()
+     {
+         System.out.println("抓老鼠");
+     }
+ }
+ class Dog extends Animal
+ {
+     public void eat()
+     {
+         System.out.println("吃骨头");
+     }
+     public void kanJia()
+     {
+         System.out.println("看家");
+     }    
+ }
+ ......
+ main()
+     Cat c =new Cat();
+     c.eat();
+     Dog d =new Dog();
+     d.eat();
+     //开始优化,注意到猫狗对象都调用eat()方法,对eat方法进行封装,即
+     public static void function(Cat c) //传猫对象名进来,不就和传普通变量或数组一样?想想是不是?
+     {
+         c.eat();
+     }
+     public static void function(Dog d)
+     {
+         d.eat();
+     }
+     //再调用,即
+     function(new Cat()); //实参新建对象猫传给形参猫类型的变量c
+     function(new Dog());
+     //问题来了,现在过了一年,又有了Pig类,他也要吃,即
+     class Pig extends Animal
+     {
+         public void eat()
+         {
+             System.out.println("吃饲料");
+         }
+     }
+     //重点来了,我们知道上面新建对象都是本类类型引用指向本类对象,即Cat c=new Cat();对吧?又注意到,现在猪对象也想要调用eat方法,去打印吃饲料,
+     //是不是还要再写一段function函数,传猪类型和变量,函数体再调用吃,这样是不是以后每有不同的动物对象,都要再重复写function,再调用?
+     //这显然增加了代码量,不合适了.
+     //注意到是不是每个动物的子类都继承了父类Animal,从这里入手,即
+     Animal c=new Cat(); //这里子类类型改为父类类型
+     //再把function()里形参,改为父类类型和父类变量,即
+     public static void function(Animal a)
+     {
+         a.eat();
+     }
+     //优化到了这里,不管是哪种动物的子类,想eat(),新建对象作为实参往里丢就行了,少写了很多句function,即
+     function(new Cat());   //实参猫对象传给形参动物类型的a变量
+     function(new Dog());
+     function(new Pig());
+ */
+  
+  总结:
+   (i)多态的体现,就是代码提现,即 父类的引用指向了子类对象.
+   (ii)多态的前提,即 必须类与类之间有关系,继承或实现,还有就是子类要覆盖父类方法.
+   (iii)多态的好处,即 提高了程序的拓展性 eg:是不是现在来个老虎类对象,丢进function函数里就吃了.
+   (iv)多态的弊端,即 只能使用父类的引用访问父类的成员 eg:function里加上a.catch();这就不行了,Animal类没有成员catch方法.
+ 以上就可以归纳为多态的扩展性.
+  
+  
  
   
   
