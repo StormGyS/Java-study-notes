@@ -399,7 +399,62 @@
    (ii)多态的前提,即 必须类与类之间有关系,继承或实现,还有就是子类要覆盖父类方法.
    (iii)多态的好处,即 提高了程序的拓展性 eg:是不是现在来个老虎类对象,丢进function函数里就吃了.
    (iv)多态的弊端,即 只能使用父类的引用访问父类的成员 eg:function里加上a.catch();这就不行了,Animal类没有成员catch方法.
- 以上就可以归纳为多态的扩展性.
+ 以上就可以归纳为(1)多态的扩展性.
+ 
+  (2)多态的转型
+   eg:
+   //在main函数中有
+   Animal a=new Cat(); //这叫父类的引用指向了子类对象,之前是本类类型,本类对象的,现在猫类型的对象的类型提升了,称为 向上转型
+   a.eat();
+   //问题来了,现在想要调用猫的特有方法,如何操作?
+   有人说好办,即
+   Cat c=new Cat();然后 c.catch(); //注意了现在是两只猫了,一只是a猫,一只是c猫,不是实现让a猫抓老鼠了,这不合适.
+   当然a.catch();也是不行的.怎么办?见下
+   //强制将父类的引用,转变成子类类型,称为 向下转型 即
+   Cat c=(Cat)a;//父类的引用a和子类变量c都指向了子类对象,现在都是对同一个猫对象操作了,然后
+   c.catch();
+   //注:不能出现将父类对象,转变为子类类型,即
+   Animal a=new Animal(); //假设可建立父类对象
+   Cat c=(Cat)a; //错误
+   //多态自始至终都是子类对象在做着变化.
+   //在function函数中.可以强制实现向下转型实现catch方法,即
+   function(new Cat());
+   public static void function(Animal a)
+   {
+       a.eat();
+       Cat c=(Cat)a;
+       a.catch();   //到了这里,就实现了猫吃鱼和抓老鼠了
+   }
+   //问题来了,如果传狗类对象进去,会如何?答案肯定是,不行,怎么能将狗类型转变为猫呢.
+   //可以加入判断,如果传进来的是猫类型对象,就吃鱼,否则干些其他的,介绍新的关键字 instanceof 用法:x instanceof y,叫x是y的实例,即
+   function(new Cat());
+   function(new Dog());
+   public static void function(Animal a) //父类引用做形参,只要是其子类对象,都可丢进去操作
+   {
+      a.eat();
+      if(a instanceof Cat)
+      {
+          Cat c=(Cat)a;
+          c.catch();
+      }
+      else if(a instanceof Dog)
+      {
+          Dog d=(Dog)a;
+          d.kanJia();
+      }
+   }
+   //现在丢猫对象进来,就吃和抓老鼠,丢狗对象进来就吃和看家.
+   //假如先判断是否是动物的实例?即if(a instanceof Animal){打印叫};这样一来,不管丢进来哪种对象,都是符合动物的实例,就不能执行else语句了,
+   //这是一个细节,不能先判断是否是父类类型.
+   
+   
+   
+   
+   
+   
+   
+   
+  
   
   
  
