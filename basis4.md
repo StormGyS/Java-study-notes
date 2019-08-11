@@ -9,6 +9,9 @@
  4.7 抽象类
  4.8 接口
  4.9 多态
+ 4.10 JDK API使用
+ 4.11 内部类和匿名内部类
+ 4.12 异常
  
   4.1 继承的概述
   
@@ -586,34 +589,234 @@
           先连接数据库,再操作数据库,最后关闭数据库连接.
    */
    
+  4.10 JDK API使用 
+  现在来学习如何使用JDK API 
+   先来介绍java中的所有类的上帝类 Object类
+   eg: class Demo   //这里就是省略了继承语句,即 class Demo extends Object
+       {}
+       Object:是所有对象的直接或者间接父类(超类,根类);
+       该类中定义了所有对象都具备的方法.
+   (1)Object类中的 equals() 相等,返回boolean类型,java认为所有对象都是可以比较的,Object类中已经提供了对对象是否相同的比较方法.
+    (i)同类下不同对象的比较,即比较的是内存地址值.
+     因为Demo类默认继承了超类Object,方法拿来用就完事了,即
+     main函数中: Demo d1=new Demo(); Demo d2=new Demo(); 打印 d1.equals(d2) 输出false,因为不同对象,所占地址不同
+    (ii)同类下不同对象的成员比较
+     eg: class Demo
+         {
+             int age;
+             Demo(int age)
+             {
+                 this.age=age;
+             }
+             public boolean compare(Demo d)
+             {
+                 return this.age==d.age;
+             }
+         }
+         class EqualsTest
+         {
+             public static void main(String[] args)
+             {
+                Demo d1=new Demo(20);
+                Demo d2=new Demo(21);
+                System.out.println(d1.compare(d2)); //执行到这打印 false
+             }
+         }
+         //分析:傻不傻啊,虽然可以实现比较,但是子类Demo是不是已经继承了超类Object了?已经有了比较方法了,进行复写不就完事了,只有沿袭超类的功能,
+         //建立自己的特有比较内容即可.好了,所以不要重新定义compare函数了,对equals方法进行复写
+         类Demo中: public boolean equals(Object obj)
+                   {
+                       if(!(obj instanceof Demo))
+                           return false;
+                       Demo d=(Demo)obj;
+                       return this.age==d.age;
+                   }
+                   //分析上面代码
+                   //(i)形参为什么不是Demo d,因为在API中,equals方法里的形参就是父类类型的引用,这里是不是体现了多态,增加了程序的扩展性,对吧.
+                   //Object obj这里就代表了d2.
+                   //(ii)为什么加入判断语句,刚好学习使用关键字instanceof,这是因为,是不是如果比较不同类的对象,传进来一个Person类对象p,先判断
+                   //是否是Demo类,不是就返回false了,这是不是增加了代码的健壮性啊,对吧.
+                   //(iii)为什么返回前要向下转型,因为如果要是返回this.age=obj.age,出现什么问题,请问,超类有变量age这一成员吗?肯定没有,
+                   //所以要先向下转型.
+                   //总结,使用equals方法,如果使用了特有数据(这里就是age),就先进行判断动作,防止把Person类转变为Demo类,再进行转型动作.
+    (2)toString() 返回任一对象的字符串形式,即
+     对象名.toString()
+     好了,学习了这两种方法就可以得出(i)我想直接使用超类方法,直接对象名.超类方法(形参)就完事了;(ii)我想使用超类方法,但是想定义特有内容直接覆盖就完事      了.
+  
+  4.11 内部类和匿名内部类
+  /*
+  内部类
+   之前如果两个类要想互相访问是不是都要建立对象,通过对象去访问别人.
+   而内部类就是将一个类定义在另一个类的里面,里面的类就叫内部类(内置类,嵌套类).
+   访问特点:
+   (i)内部类可以直接访问外部类的成员,包括私有.(私有只在本类有效,本类可用,其他类不可访问);
+   (ii)外部类要访问内部类,必须建立内部类对象.
+   class Outer //外部类
+   {
+       private int x=3; //外部类成员变量
+       class Inner //内部类作为外部类成员
+       {
+           int x=4; //内部类成员变量
+           void method()
+           {
+               int x=5; //方法中的局部变量
+               System.out.println(x);  
+           }
+       }
+       public void function()
+       {
+           Inner i=new Inner();  //符合访问特点(ii)
+           i.method();
+       }
+   }
+   class InnerTest
+   {
+             public static void main(String[] args)
+             {
+                 Outer o=new Outer();
+                 o.function();
+             }
+   }
+   分析: o.function()执行完打印的是3还是4,还是5?答案是5.
+   这是因为function有变量x了,就访问局部变量了;如果打印 this.x,输出4,因为this代表的是内部类的对象;如果想打印3,就指定,即Outer.this.x,即
+   外部类对象的成员x;如果没有int x=5,打印x,要知道前面都默认省略了this或Outer.this;如果想在主函数中直接访问内部类,就是不需要
+   在function中建立Inner对象,格式如下:
+   Outer.Inner i=new Outer().new Inner();
+   i.method();
    
-   
-   
+   访问格式:
+   (1)当内部类定义在外部类的成员位置时,而且非私有,可以在外部其他类中,可以直接建立内部类对象.外部其他类举个例子如InnerTest类.
+      格式: 外部类名.内部类名 变量名 = new 外部类名().new 内部类名(); 如:main中的Outer.Inner i=new Outer().new Inner();
+   (2)当内部类被修饰符修饰时:
+      private,将内部类在外部类中进行了封装;
+      static,内部类就具备了static的特性:
+      (i)此时,内部类只能访问外部类的静态成员了,访问出现局限;
+      (ii)在外部其他类中,如何直接访问静态内部类中的非静态成员,思考,不是静态,就必须要对象,所以格式为 new Outer.Inner().xxx,xxx为变量或方法;
+      (iii)在外部其他类中,如何直接访问静态内部类中的静态成员,更简单,静态的,来类名就完事了,格式为 Outer.Inner.xxx;
+      注意:当内部类中定义了静态成员,那么内部类必须也是静态的.跟抽象方法一样;
+           当外部类中的静态方法想要访问内部类时,内部类必须是静态的.格式有:Inner.xxx或new Inner().xxx;
+     上面规则很好记,静态的直接拿类名用就完事了,非静态的就搞对象啊,静态的+非静态的,就类名加搞对象一起啊.
+     
+  内部类定义原则,即啥时定义内部类:
+  class是干嘛的?描述事物的,在描述时,是不是要让类与类之间有更好的联系啊,对吧,比如继承,实现.现在当描述某一类事物时,事物内部又有许多类事物,就把他们
+  定义为内部类.举个例子,拿人体(body)这类事物来说,描述body类时,现在又想要描述人体的各个器官,比如说心脏(xinzang)类,是不是把xinzang类定义为body类
+  的内部类更好,因为xinzang类还要访问body类里的其他类,如胃部,对吧.更好的显示了类与类的联系.定义在外部类中,可以对其进行封装(即可以使用private)
+  不让外部其他类随便访问了,想访问就提供公共的访问方法,还要进行判断,不是谁都可以访问本私有内部类的.想想是不是?板砖的想访问xinzang,疯了哦.
+  
+  注意了注意了注意了,上面说内部类定义在成员位置时,可以被static修饰,现在在上面的method方法中定义一个内部类,此时该内部类也是内部类,但是叫他
+  局部内部类,局部内部类不能被static修饰了只有成员才行.该内部类也不能有静态成员了,想想就对的,但是,访问方式是不变的.
+  总结:当内部类定义在局部时 (i)不可以被成员修饰符修饰了;(ii)该内部类只能访问外部成员和被final修饰的局部变量了;eg:在method方法中,定义int x=4;
+  同在该method方法里的局部内部类不能访问x,想要访问,必须是final int x=4;
+  小知识:现在往method方法里搞个形参,有method(int a),局部内部类也不能访问,必须是形参final int a;我们知道被final修饰的变量为常量,那么在main
+  函数中,新建一个对象调用method方法,传o.method(7)和o.method(8),可以吗,答案是可以的,因为a不是成员变量被final修饰了,当运行新建对象o了,传7进去,
+  开始进栈,执行结束就出栈了;同样传8进去,a被锁住了,值为8了,执行完就出栈了,a就释放了.如果传a进去,a被锁住了,为7,实现a++,就出现问题了.当然了,新建
+  两个对象,即o1.method(7);和o2.method(8);也可以.
+  */
+  
+  /*
+  匿名内部类:
+   我们知道如果想要使用对象一次,那就是 new 类名();即可,想要使用对象多次就给他起个名即可.
+   仍然拿body和心脏来理解匿名内部类,人体这类事物里有心脏这类事物,同样的猫体内也有心脏,好了,就提取心脏这类事物,形成父类(接口),本例只定义人体和
+   人体心脏,不定义猫了.即
+   abstract class XinZang
+   {
+       abstract void tiao();
+   }
+   class PersonBody
+   {
+       //代码段a
+       class PersonXinZang extends XinZang  //内部类可以直接继承外部其他类      
+       {
+           void tiao()
+           {
+               System.out.println("跳动");
+           }
+       }
+       public void function()
+       {
+           //代码段b
+           new PersonXinZang().tiao();
+       }
+   }
+   main中: new PersonBody().function();  //到这就完事了
+   //开始介绍匿名内部类了:
+   //(i)匿名内部类就是内部类的简写格式;
+   //(ii)写匿名内部类的前提是必须要继承一个类(有父类)或者实现接口;
+   //(iii)格式: new 父类(或接口)名(){子类要对父类(或接口)复写的内容}.要调用的方法()
+          eg:现在开始简写了,不要代码段a和b了,直接在function里实现复写和调用,即
+          匿名内部类即只有class了,没有匿名内部类名了,当然就不能建立对象了,所以考虑建立父类对象,又因为父类里有抽象方法,建立没意义,所以在建立父类对
+          象的同时,声明子类对父类要复写的内容,即
+          public void function()
+          {
+              new XinZang()
+              {
+                   void tiao()
+                   {
+                       System.out.println("跳动");
+                   }
+                   void show() //声明show方法,匿名子类对象中的一个特有功能
+                   {}
+              }.tiao();
+          }
+          注意:也可以建立父类对象时,起个名,即 XinZang xz=new XinZang(){......},记住起名后,大括号后要加符号 ; 然后xz.tiao();也行,但是xz.show()           就不行,因为父类引用只能使用父类成员.
+    //(iv)其实匿名内部类就是一个匿名子类对象,而且这个对象有点胖,胖是因为带对象内容.
+          即匿名内部类就是先建立父类对象,再实现子类对象对父类(多个)方法的复写,最后在调用子类对象所需的方法,简写就是  一步到位.
+    //(v)匿名内部类中定义的方法最好不要超过三个.因为复写时会导致代码长,阅读性差,如果不给父类对象起名,会出现多个相同的代码段,只是调用时 .xxx不同,
+         阅读性就差了,代码谁写的,太烂了. 
+    练习1:通过匿名内部类补足在主函数中的语句 Outer.function().method();这里method()定义在接口A中;
+          分析:Outer.function()到这可以发现什么,是不是Outer类有一个成员function(),并且是静态的,没有形参,对吧,但是不知道返回值类型;
+               .method()就是返回值.method(),好了,返回值要么是类名,要么是对象.
+               又因为接口为:
+               interface A
+               {
+                   void method(); //系统默认加上public abstract
+               }
+               所以不是静态的,类名排除,确定了function返回值类型为A,因为要用匿名内部类,不能有别的类,返回对象只能是接口类型,综合得出即
+               class Outer
+               {
+                   public static A function()
+                   {
+                       return new A()
+                       {
+                           public void method()
+                           {}
+                       };  //注意这里为什么不加.method,因为要求返回的只是一个对象,又要求用匿名内部类,所以返回一个胖对象,不需要调用匿名子类对象的                            //method方法,主函数里返回值.method()已经实现调用了好吧.
+                   }
+               }
+     练习2:没有父类也没有接口,要求使用匿名内部类.
+      想到了超类Object,即
+      main中 new Object()
+             {
+                 void function()
+                 {}
+             }.function();
+      所以讲到这,只要父类成员少,使用匿名内部类,一步到位即可;注意一下,结束要么是大括号要么是";",而使用匿名内部类都要加符号";".
+  */
+  
+  4.12 异常
+   异常:就是程序在运行时(编译通过)出现的不正常情况.
+   异常的由来:现实生活中,出现的许多问题也是一个具体的事物,也可以通过java中的类进行描述,并封装成对象.
+   异常分为严重情况和非严重情况,严重的问题为Error类,非严重的问题为Exception类,对着两个类向上抽取,形成了一个异常体系,即
+   异常体系
+    Throwable类 (所有问题的超类)
+     Error类
+      通常出现重大问题,如运行的类不存在(java haha,无haha类)或者内存溢出等;
+      不编写针对代码对其处理
+     Exception类
+      在运行时出现的一些情况,如角标越界或类转变异常等,可以通过try catch finally
+   Error和Exception的子类名都是以父类名作为后缀的
+   java中对于这些抛出的异常情况都可以在JDK API 中的lang Throwable类中查看.
+  
+  
+  
+  
+  
+  
+                   
   
    
+                 
+     
    
+       
    
-   
-   
-   
-   
-   
-  
-  
-  
- 
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
- 
-   
-      
