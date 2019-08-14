@@ -794,18 +794,161 @@
   */
   
   4.12 异常
-   异常:就是程序在运行时(编译通过)出现的不正常情况.
-   异常的由来:现实生活中,出现的许多问题也是一个具体的事物,也可以通过java中的类进行描述,并封装成对象.
-   异常分为严重情况和非严重情况,严重的问题为Error类,非严重的问题为Exception类,对着两个类向上抽取,形成了一个异常体系,即
-   异常体系
-    Throwable类 (所有问题的超类)
-     Error类
-      通常出现重大问题,如运行的类不存在(java haha,无haha类)或者内存溢出等;
-      不编写针对代码对其处理
-     Exception类
-      在运行时出现的一些情况,如角标越界或类转变异常等,可以通过try catch finally
-   Error和Exception的子类名都是以父类名作为后缀的
-   java中对于这些抛出的异常情况都可以在JDK API 中的lang Throwable类中查看.
+   (1)异常:就是程序在运行时(编译通过)出现的不正常情况.
+      异常的由来:现实生活中,出现的许多问题也是一个具体的事物,也可以通过java中的类进行描述,并封装成对象.
+      异常分为严重情况和非严重情况,严重的问题为Error类,非严重的问题为Exception类,对着两个类向上抽取,形成了一个异常体系,即
+      异常体系
+      Throwable类 (所有问题的超类)
+       Error类
+        通常出现重大问题,如运行的类不存在(java haha,无haha类)或者内存溢出等;
+        不编写针对代码对其处理
+       Exception类
+        在运行时出现的一些情况,如角标越界或类转变异常等,可以通过try catch finally
+      Error和Exception的子类名都是以父类名作为后缀的
+      java中对于这些抛出的异常情况都可以在JDK API 中的lang Throwable类中查看.
+   (2)异常的处理
+    class Demo
+    {
+        public int div(int a,int b)
+        {
+            return a/b;
+        }
+    }
+    class ExceptionDemo
+    {
+        public static void main(String[] args)
+        {
+            Demo d=new Demo();
+            //注释以下三句 (a)
+            int x=d.div(4,0);
+            System.out.println(x);
+            System.out.println("over");
+        }
+    }
+    /*
+    分析:编译运行,编译通过,但是运行报错,即出现提示ArithmeticException(算数运算异常),即运行时的异常,且java通过已经定义好的类ArithmeticException
+    通过默认的处理机制告诉我们 / by zero(被零除).自动停止,也不会运行下面的打印语句了,输出over了,java提供了语句帮助我们即使运行出现异常,仍然会
+    继续输出打印over;即java提供了特有的语句进行处理异常.
+    try
+    {
+        需要被检测的代码(容易运行异常的代码段);
+    }
+    catch(异常类 变量)
+    {
+        处理异常的代码(处理方式);
+    }
+    finally
+    {
+        一定会执行的语句;
+    }
+    优化:(a)
+    try
+    {
+        int x=d.div(4,0);
+        //将打印x放在try内,是因为如果传的参数是正确的,因为x是局部变量,只作用于try内,把打印语句放try,catch,finally外,则不会打印x了.
+        System.out.println(x);
+    }
+    //相当于Exception e=new ArithmeticException();即所有的异常类的父类Exception做形参,父类引用指向所有的子类对象.ArithmeticException是子类异常
+    //类中的一种,new ArithmeticException()是子类对象,如果不使用异常处理语句,就会默认报异常名称(即异常子类),异常信息(如/byzero),异常位置(出错的
+    //语句在哪行,即jvm默认调用Exception类下的printStackTrace()执行)
+    catch(Exception e) 
+    {
+        System.out.println("除零了");//假如传的就是4,0;我们自定义了提供处理异常的方式,即除零了.
+        //当然我们也可以使用JDK API中已经定义好的父类Exception里提供的方法给我们处理异常,如:
+        System.out.println(e.getMessage());  //获取异常信息
+        System.out.println(e.toString());//异常名称 异常信息
+        e.printStackTrace(); //该方法返回值为void,应该直接调用 异常名称,异常信息,异常位置     
+    }
+    System.out.println("over");//因为已经处理了异常,所以会运行该语句,执行over.                   
+    */
+    /*
+    (1)声明异常
+    上面的例子中不管是传4,1还是传4,0都是有可能的,所以当我们在定义函数时(比如div())就要进行标识,告诉别人这里可能会发生问题,即
+    通过关键字throws(抛)来标识可能会出现异常,用法 throws Exception
+    eg: public int div(int a,int b)throws Exception //标识该处可能抛出异常  可以记为甩锅
+    怎样甩的,加了此语句,编译就会出现对该异常进行 (i)捕捉或(ii)声明抛出
+    (i)捕捉 就是在编写该div函数时,只要加了throws Exception,就可以通过try,catch和finally来解决.
+    (ii)声明抛出 就是当主函数调用div函数时,传入了4,0;主函数解决不了,即方法div甩锅给了主函数,主函数没办法解决了,可以继续甩锅,即
+    psvm(Sa)throws Exception //因为jvm调用了主函数,所以主函数有甩锅给了jvm,当传4,0时,编译通过,运行后jvm处理为算数运算异常,即调用
+                            //printStackTrace()方法处理异常;当传4,1时,div甩给了main,main甩给了jvm,jvm解决发现没异常,就会运行.
+        所以当定义函数时,只要加了抛出异常,这锅就必须有人接着,可以try,catch,finally;或者甩给其他人(此处甩了两次最终到了jvm手里),没问题就按正常得来
+        有问题,jvm就调用printStackTrace()处理异常.在函数上声明异常,便于提高安全性,让调用者进行处理,不处理就会编译失败.
+        所以,只要想甩锅了,就最好try,catch和finally就完事了.
+    (2)声明多异常
+     从(1)可以看出使用throws Exception,很模糊,就是不知道可能抛出啥异常,所以就有了声明多异常.就是声明具体的异常,处理的可以更具体.
+     对方声明几个异常,就对应有几个catch块,不要定义多余的catch块.
+     如果多个catch块中的异常出现继承关系,父类异常catch块放在最下面.
+     eg: div()throws ArithmeticException,ArrayIndexOutOfBoundsException
+         {
+             int[] arr=new int[a];
+             System.out.println(arr[4]);//传4,1时就会角标越界了
+             ...
+         }
+         main
+         {
+             catch(ArithmeticException e)
+             {}
+             catch(ArrayIndexOutOfBoundsException e)
+             {}
+             catch(Exception e) //写一个父类异常是为了解决如果抛出了上面两个之外的异常情况,放在最下面,是因为如果放在最上面,该catch块是
+             {}                 //大哥,他就会解决下面两个的异常情况了,下面的catch不会执行了
+         }
+         所以建议在进行catch处理时,catch中一定要定义具体的处理方式.
+         不要简单一句就是e.printStackTrace();
+         也不要简单的就书写一条输出语句.
+         最nb的就是catch里的问题通过一个异常日志文件记录下来,在查看日志文件时,当某一时刻出现问题时,就可以针对解决了.
+    (3)因为项目中会出现特有的问题,而这些问题并未被java所描述并封装对象.所以对于这些特有问题可以按照java的对问题封装的思想.将特有的问题,进行
+    自定义的异常封装.即 自定义异常.
+    需求:在上例中,当除数为零,java会自动报错.现在要求如果除数为负数,也是错误的无法运行的.
+    那么就需要对这个问题进行自定义的描述.
+    class FuShuException extends Exception //后缀为Exception更直观,继承异常体系中的父类Exception很多好处,入伙肯定没错的
+    {
+        //定义异常信息     
+        FuShuException(String msg) 
+        {
+            super(msg);//因为父类中有构造函数Exception(String message)和getMessage()实现对异常信息的赋值操作了,直接调用即可.这就是入伙的好处之                        //一,省去了定义msg,赋值this.msg,和getMsg()了.
+        }
+    }
+    class Demo
+    {
+        int div(int a,int b)throws FuShuException //声明负数异常
+        {
+            if(b<0)
+                throw new FuShuException("除数不能为负数");//手动手动手动通过throw关键字抛出一个自定义异常对象,并初始化异常信息
+            return a/b; //如果b小于零,就不会运行该条语句
+        }
+    }
+    class ExceptionDemo1
+    {
+        public static void main(String[] args)
+        {
+            Demo d=new Demo();       
+            try
+            {
+                System.out.println(d.div(4,-1));
+            }
+            catch(FuShuException e)
+            {
+                System.out.println(e.toString());  //入伙好处,直接可以使用toString()
+            }
+        }
+    }
+    分析:
+    当在函数内部出现了throw抛出的异常对象,那么就必须要给对应的处理动作:
+    要么在内部try,catch处理;
+    要么在函数上声明让调用者处理.
+    一般情况下,函数内出现异常,函数上需要声明.
+    如何定义异常信息?
+    因为父类中已经把异常信息的操作都完成了,所以子类只要在构造时,将异常信息传递给父类通过super语句,那么就可以直接通过getMessage()获取
+    自定义的异常信息了.
+    自定义异常:必须是自定义类继承Exception类.
+    继承原因:
+    异常体系都有一个特点,因为异常类和异常对象都被抛出,他们都具备可抛性,这个可抛性是Throwable这个体系中独有特点.
+    只有这个体系中的类和对象才可以被throw和throws操作.
+    */
+    
+   
+    
   
   
   
