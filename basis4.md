@@ -945,8 +945,231 @@
     继承原因:
     异常体系都有一个特点,因为异常类和异常对象都被抛出,他们都具备可抛性,这个可抛性是Throwable这个体系中独有特点.
     只有这个体系中的类和对象才可以被throw和throws操作.
+    throws与throw的区别:
+    (i)位置区别: throws在函数上; throw在函数内.
+    (ii)throws后面跟的是异常类,可以跟多个,用逗号隔开; throw后面跟的是异常对象.
+    */
+    /*
+    在Exception类中有一个特殊的子类异常,叫RuntimeException 运行时异常.他还有许多小弟,如IndexOutOfBoundsException,NullPointerException等.
+    如果在函数内抛出该异常(子类或者是其小弟),函数上可以不用声明,编译一样通过.
+    如果在函数上声明了该异常,调用者可以不用进行处理,编译一样通过.
+    之所以不在函数上声明,就是不想让调用者处理.当该异常发生(运行后),希望程序停止,因为在运行时,出现了无法继续运算的情况,希望停止程序后对代码进行修正.
+    所以在自定义异常时,如果想让调用者进行可踹(try)可抛操作,就让他继承Exception类,在函数内throw,就要在函数上声明throws.如果不想要调用者处理,就继承
+    RuntimeException类,在函数内throw,就不需要函数上throws了,你不知道有该异常,瞎传值,我就让程序运行后停止,告诉你异常,再修正代码.
+    当然可以在函数内进行if(b==0) throw new ArithmeticException("除数为零了");还要声明,最后抛的就是异常名称和自己修改的异常内容,不是/by zero了.
+    对于异常分两种:
+    (i)编译时被检测的异常
+     该异常在编译时,如果没有处理(踹或抛),编译失败.
+     该异常被标识(即声明),标识可以被处理.
+    (ii)编译时不被检测的异常(运行时异常,即RuntimeException及其子类)
+     在编译时不需要被处理,编译通过.
+     该异常发生,建议不处理,让程序停止,对代码进行修正.
     */
     
+  //要想程序执行到某一地方就结束,一是利用return语句,而其下面的代码就不会执行了.二是throw一下即可.
+  
+  /*
+  前面对于抛出的异常,只使用了try,catch代码块,现在来学加上finally代码块.
+  finally: 里面放的是一定会执行的代码. 通常用于关闭资源,因为资源要被释放或者是不管怎样都要执行的代码.
+  注意注意注意:有一种情况,就是当执行到语句 System.exit(0);//系统关闭,jvm结束,此时其后的finally语句就不执行了.
+  拿数据库来说,我想要数据库管理员添加数据,但是管理员添加失败;好了,失败了也要告诉我一下,我好知道啊,不能不给我回信啊.
+  class FailException extends Exception //管理员自定义添加失败异常用于添加数据失败时反馈给我
+  {}
+  class TianJia throws FailException
+  {
+      连接数据库;
+      添加数据;
+      关闭数据库;
+      try
+      {
+          连接数据库;
+          添加数据;throw new SQLException(); //添加时无法添加数据,数据库抛出数据库异常
+      }
+      catch(SQLException e)
+      {
+          管理员解决处理数据库异常;
+          throw new FailException(); //不论管理员是否搞好了数据库,要给我回信,抛给我不能添加数据该异常,并声明
+      }
+      finally
+      {
+          关闭数据库; //无论操作数据库是否成功,都执行关闭数据库,即关闭资源.
+      }
+  }
+  */
+  
+  /*
+  异常-处理语句的其他格式:
+  (i)try
+     {}
+     catch()
+     {}
+  (ii)try
+      {}
+      catch()
+      {}
+      finally
+      {}
+  (iii)try
+       {}
+       finally
+       {}
+  对于以上三种格式根据需求,择其一使用.当然了,一个try,可以对应多个catch.
+  eg1:
+  class Demo1
+  {
+      try
+      {
+          throw new Exception();
+      }
+      catch(Exception e) //因为抛出的是Exception,按理要声明,但是利用catch块捕捉到了该异常,即在内部就解决了该Exception异常,所以编译成功.
+      {
+          //throw e; //编译失败,因为抓住了一个问题e,无法解决,所以选择继续抛出该问题e.
+          try
+          {
+              throw e; 
+          }
+          catch()
+          {} //对于又抛出了问题e,可以在内部处理,选择不抛出.       
+      }
+  }
+  如果无法解决该异常,但是该异常不属于本功能的异常,就通过转换后抛出与本功能相关的异常.
+  eg:
+  try
+  {
+      throw new AException();
+  }
+  catch(AException e)
+  {
+      //抓到了A异常,但是不相干,转换后抛出;    
+      throw new BException();
+  }
+  或者是A异常可以被处理,处理后和本功能的异常抛出让调用者知道,如汇款.
+  try
+  {
+      throw new AException(); //A异常为我汇款给张三一百元,我账户没了一百元的异常
+  }
+  catch(AException e)
+  {
+      //抓到A异常,解决了我账户没了一百元的异常    
+      throw new BException(); //抛出B异常,是没有汇款成功异常,告诉调用者,让调用者(即我)处理 再汇一次或者告诉张三汇不了
+  }
+  eg2:
+  class Demo2
+  {
+      public void method()
+      {
+          try
+          {
+              对于在method方法内,可能发生其他问题,所以try一下,不用catch,就不想在内部解决,交给调用者处理.
+          }
+          finally
+          {
+              对于出现了问题,该method方法还要关闭使用的其他资源,就定义在finally内.这时就选择格式(iii)
+          }
+      }
+  }    
+  */
+  
+  /*
+  异常-覆盖时的异常特点:
+  (i)如果父类中的函数抛出异常,子类只能抛出父类异常或者抛出父类异常的子类异常或者不抛(就内部解决);
+  eg:
+  class AException throws Exception{}
+  class BException extends AException{}
+  class Demo
+  {
+      void method() throws AException   
+      {}
+  }
+  class Demo1 extends Demo
+  {
+      void method() throws AException //(throws BException)
+      {}
+  }
+  (ii)如果父类函数抛出多个异常,则子类覆盖函数只能抛出父类函数异常的子集.(反正不能超过)
+  (iii)如果父类或者接口中的函数没有异常抛出,则子类覆盖函数也不能抛出异常.
+  上面三种,如果子类覆盖函数硬是要抛出新异常,必须要内部解决,用try处理,绝对不能抛出.
+  */
+  
+  /*
+  异常-练习
+  需求:分别求长方形和圆形的面积
+  问题:用户可能传非法值
+  思路:主要考虑问题,通过描述,当用户传非法值时,就抛出问题.假如描述问题继承的是Exception类,那么当传的是非法值时,抛出异常对象,声明异常,此时,我们可以
+  可踹可抛.因为还要求圆面积,所以不抛,就踹.踹之后就可以继续求圆面积了对吧,发现问题了,你解决了长方形的属性的非法值问题,但是长方形仍然不存在,面积
+  还是没解决.此时我们就可以让出现非法值问题继承RuntimeException类,抛出异常对象,但不需要声明异常.注意了注意了注意了,此时没声明异常,就不会选择try了,
+  抛呢?也不合适,所以就让jvm默认调用PrintStackTrace()方法,告诉用户异常名称,异常信息,异常位置,必须要求用户传正确值,得到一个长方形,求出面积,此时才能
+  继续运行求圆面积.
+  class NoValueException extends RuntimeException
+  {
+      NoValueException(String message)
+      {
+          super(message);
+      }
+  }
+  interface Shape
+  {
+      void getArea(); //对两个图形分析,向上抽取出抽象函数,又因为形参个数不同,所以抽取为无参数函数
+  }
+  class Rec implements Shape
+  {
+      private int len,wid;
+      Rec(int len,int wid) //一新建对象就要有属性长和宽
+      {
+          if(len<=0 || wid<=0)
+              throw new NoValueException("长和宽的值非法");
+          this.len=len;
+          this.wid=wid;
+      }
+      public void getArea()
+      {
+          System.out.println(len*wid);
+      }
+  }
+  class Circle implements Shape
+  {
+      private int radius;
+      public static final double PI=3.14;
+      Circle(int radius) //一新建对象就要有属性长和宽
+      {
+          if(radius<=0)
+              throw new NoValueException("半径的值非法");
+          this.radius=radius;       
+      }
+      public void getArea()
+      {
+          System.out.println(radius*radius*PI);
+      }
+  }
+  class ExceptionTest
+  {
+      public static void main(String[] args)
+      {
+          Rec r=new Rec(4,5);
+          r.getArea();
+          System.out.println("继续");
+          Circle c=new Circle(-3);
+          c.getArea();      
+      }
+  }
+  */
+  
+  /*
+  总结:
+  讲了这么多,主要是强调一是,定义功能时,出现了问题,就描述成异常(即自定义异常类),将问题封装成对象(eg:非法值问题,异常类:NoValueException,异常对       象:new NoValueException("异常内容"),对象初始化:声明异常内容.).至于继承谁,根据实际情况.对于自定义异常,一定要手动抛出.当然了,也可以手动抛出
+  java中已经定义好的异常类.对于抛出的异常对象,是可踹可抛的.没人接锅,就不抛.想要修正代码后再继续运行下面代码,就不处理.想要出现问题后,接着运行,就处理   一下,即踹一下. 分清修正和处理,对于误操作数据,就想要告诉你必须正确操作数据,程序就必须停止,就必须修正代码(如传正确数据),才才才可以继续运行.对于误操   作数据,不要求用户修正,就处理问题(踹一下),程序不会停止,然后继续运行后面代码.对于throw抛出的非运行时异常,没有用try处理,就必须声明,交由调用者处理,   当然内部try过了,就不需要声明了.
+  异常好处:
+  (i)将问题进行封装;
+  (ii)将正常流程代码与问题处理代码相分离,方便于阅读.
+  */
+  
+  
+  
+  
+  
+    
+    
+   
    
     
   
